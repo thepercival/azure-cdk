@@ -2,15 +2,15 @@ name: CI + CD
 
 on:
   push:
-    #branches: [ main ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 env:
-    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ env.ENVIRONMENT }}"    
-    ENVIRONMENT: ${{ env.ENVIRONMENT }}
-    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ env.ENVIRONMENT }}"
+    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"    
+    ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"
 
 jobs:
   Build:
