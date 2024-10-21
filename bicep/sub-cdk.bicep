@@ -11,4 +11,4 @@ resource resResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: resourceGroup.location
 }
 
-output message string = 'deployed in environment ${environment}'
+output message string = 'resourceGroup "${resourceGroup.name}" deployed in environment "${environment}"'

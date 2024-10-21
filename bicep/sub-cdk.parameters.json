@@ -4,7 +4,7 @@
     "parameters": {
         "resourceGroup": {
             "value": {
-                "name": "core",
+                "name": "rg-core",
                 "location": "westeurope"
             }
         }
