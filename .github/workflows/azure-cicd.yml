@@ -12,8 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_SUBSCRIPTION_BASENAME: "sub-${{ vars.AZURE_SUBSCRIPTION }}"    
-  GITHUB_ENVIRONMENT_BASENAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}"
+  AZURE_SUBSCRIPTION_BASENAME: "sub-${{ vars.AZURE_SUBSCRIPTION }}"
 
 jobs:
   DeployDev:
