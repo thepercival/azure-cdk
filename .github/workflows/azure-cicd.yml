@@ -30,6 +30,7 @@ jobs:
         uses: azure/arm-deploy@v2
         with:
           scope: subscription
+          region:  West Europe
           subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
           template: ./bicep/main.bicep
           parameters: ./bicep/parameters.json environment=dev
