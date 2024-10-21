@@ -33,7 +33,7 @@ jobs:
     environment: github-azure-cdk-dev
     steps:
       - name: Deploy
-        run: echo I am deploying for dev! 
+        run: echo "I am deploying for ${{ env.ENVIRONMENT_NAME }} - ${{ vars.ENVIRONMENT_NAME }} "
     
 #   DeployStaging:
 #     name: Deploy to Staging 
