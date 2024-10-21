@@ -16,20 +16,10 @@ env:
   GITHUB_ENVIRONMENT_BASENAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}"
 
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Compile
-        run: echo "env.AZURE_SUBSCRIPTION_BASENAME = ${{ env.AZURE_SUBSCRIPTION_BASENAME }}" 
-      - name: Compile3
-        run: echo "env.GITHUB_ENVIRONMENT_BASENAME = ${{ env.GITHUB_ENVIRONMENT_BASENAME }}" 
-    
   DeployDev:
     name: Deploy to Dev 
     # if: github.event_name == 'pull_request'
-    needs: [Build]
+    # needs: [Build]
     runs-on: ubuntu-latest
     environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-dev"
     steps:
