@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
 
 env:
-    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"    
-    ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"
+    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT_NAME }}"    
+    ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
+    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT_NAME }}"
 
 jobs:
   Build:
@@ -21,16 +21,16 @@ jobs:
       - name: Compile
         run: echo "env.AZURE_SUBSCRIPTION = ${{ env.AZURE_SUBSCRIPTION }}" 
       - name: Compile2
-        run: echo "env.ENVIRONMENT = ${{ env.ENVIRONMENT }}" 
+        run: echo "env.ENVIRONMENT_NAME = ${{ env.ENVIRONMENT_NAME }}" 
       - name: Compile3
         run: echo "env.GITHUB_ENVIRONMENT_NAME = ${{ env.GITHUB_ENVIRONMENT_NAME }}" 
     
   DeployDev:
     name: Deploy to Dev 
-    if: github.event_name == 'pull_request'
+    #if: github.event_name == 'pull_request'
     needs: [Build]
     runs-on: ubuntu-latest
-    #environment: ${{env.GITHUB_ENVIRONMENT_NAME}}
+    environment: github-azure-cdk-dev
     steps:
       - name: Deploy
         run: echo I am deploying for dev! 
