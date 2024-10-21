@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-dev"
     steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
       - name: Log into Azure
         uses: azure/login@v2
         with:
