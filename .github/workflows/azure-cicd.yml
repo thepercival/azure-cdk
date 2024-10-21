@@ -8,31 +8,32 @@ on:
   workflow_dispatch:
 
 env:
-    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-?"
+    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"    
+    ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"
 
 jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Compile
-        run: echo "env.AZURE_SUBSCRIPTION = ${{ env.AZURE_SUBSCRIPTION }}!" 
+        run: echo "env.AZURE_SUBSCRIPTION = ${{ env.AZURE_SUBSCRIPTION }}" 
       - name: Compile2
-        run: echo "steps.env.outputs.environment = ${{ steps.env.outputs.environment }}!" 
-        
+        run: echo "env.ENVIRONMENT = ${{ env.ENVIRONMENT }}" 
+      - name: Compile3
+        run: echo "env.GITHUB_ENVIRONMENT_NAME = ${{ env.GITHUB_ENVIRONMENT_NAME }}" 
     
-#   DeployDev:
-#     name: Deploy to Dev 
-#     if: github.event_name == 'pull_request'
-#     needs: [Build]
-#     runs-on: ubuntu-latest
-#     environment:     
-#       name: github-azure-cdk-dev
-#       url: 'http://dev.myapp.com'
-#     steps:
-#       - name: Deploy
-#         run: echo I am deploying! 
+  DeployDev:
+    name: Deploy to Dev 
+    if: github.event_name == 'pull_request'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    #environment: ${{env.GITHUB_ENVIRONMENT_NAME}}
+    steps:
+      - name: Deploy
+        run: echo I am deploying for dev! 
     
 #   DeployStaging:
 #     name: Deploy to Staging 
