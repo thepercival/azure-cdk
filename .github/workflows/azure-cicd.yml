@@ -35,8 +35,8 @@ jobs:
           scope: subscription
           region:  West Europe
           subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
-          template: ./bicep/main.bicep
-          parameters: ./bicep/parameters.json environment=dev
+          template: ./bicep/sub-cdk.bicep
+          parameters: ./bicep/sub-cdk.parameters.json environment=dev
           failOnStdErr: true 
       - name: logout
         run: |

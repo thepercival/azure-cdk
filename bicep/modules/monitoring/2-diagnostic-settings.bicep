@@ -1,5 +1,3 @@
-targetScope = 'subscription'
-
 param logAnalyticsWorkspaceId string
 
 var activityLogDiagnosticSettingsName = 'export-activity-log'
