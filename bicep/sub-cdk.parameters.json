@@ -5,7 +5,7 @@
         "resourceGroup": {
             "value": {
                 "name": "core",
-                "location": "westeu"
+                "location": "westeurope"
             }
         }
     }
