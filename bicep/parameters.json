@@ -1,0 +1,19 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "logWorkspace" : {
+            "value": {
+                "name": "log-cdk",
+                "sku": "PerGB2018",
+                "retentionInDays": {
+                    "dev": 5,
+                    "acc": 5,
+                    "prd": 120
+                },
+                "resourcePermissions": true,
+                "heartbeatTableRetention": 30
+            }            
+        }
+    }
+}
