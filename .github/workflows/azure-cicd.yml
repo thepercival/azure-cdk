@@ -1,0 +1,60 @@
+name: CI + CD
+
+on:
+  push:
+    #branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"    
+    ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compile
+        run: echo "env.AZURE_SUBSCRIPTION = ${{ env.AZURE_SUBSCRIPTION }}" 
+      - name: Compile2
+        run: echo "env.ENVIRONMENT = ${{ env.ENVIRONMENT }}" 
+      - name: Compile3
+        run: echo "env.GITHUB_ENVIRONMENT_NAME = ${{ env.GITHUB_ENVIRONMENT_NAME }}" 
+    
+  DeployDev:
+    name: Deploy to Dev 
+    if: github.event_name == 'pull_request'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    #environment: ${{env.GITHUB_ENVIRONMENT_NAME}}
+    steps:
+      - name: Deploy
+        run: echo I am deploying for dev! 
+    
+#   DeployStaging:
+#     name: Deploy to Staging 
+#     if: github.event.ref == 'refs/heads/main'
+#     needs: [Build]
+#     runs-on: ubuntu-latest
+#     environment: 
+#       name: Staging
+#       url: 'http://test.myapp.com'
+#     steps:
+#       - name: Deploy
+#         run: echo I am deploying! 
+            
+#   DeployProd:
+#     name: Deploy to Production 
+#     needs: [DeployStaging]
+#     runs-on: ubuntu-latest
+#     environment: 
+#       name: Production
+#       url: 'http://www.myapp.com'
+#     steps:
+#       - name: Deploy
+#         run: echo I am deploying! 
+    

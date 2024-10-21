@@ -1,0 +1,39 @@
+name: Deploy Bicep file
+
+on: [push]
+
+permissions:
+      id-token: write
+      contents: read
+
+env:
+  AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}  
+  ENVIRONMENT: environment
+
+jobs:
+
+  azure:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy Bicep file
+      uses: azure/arm-deploy@v2
+      with:
+        scope: subscription
+        subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+        template: ./bicep/main.bicep
+        parameters: ./bicep/parameters.json environment=${{ env.environment }}
+        failOnStdErr: true 
+
+    - name: logout
+      run: |
+        az logout
+    
