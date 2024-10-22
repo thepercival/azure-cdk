@@ -36,8 +36,8 @@ jobs:
           scope: subscription
           region: ${{ env.LOCATION }}
           subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
-          template: ./bicep/sub-cdk.bicep
-          parameters: ./bicep/sub-cdk.parameters.json environment=dev resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
+          template: ./bicep/1-sub-cdk.bicep
+          parameters: ./bicep/1-sub-cdk.parameters.json environment=dev resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
           failOnStdErr: true 
       - name: Bicep Deploy LogWorkspace into "rg-core"
         uses: azure/arm-deploy@v2
@@ -45,8 +45,8 @@ jobs:
           scope: resourcegroup
           subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
           resourceGroupName: rg-core
-          template: ./bicep/sub-cdk/rg-core.bicep
-          parameters: ./bicep/sub-cdk/rg-core.parameters.json environment=dev
+          template: ./bicep/sub-cdk/2-rg-core.bicep
+          parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=dev
           failOnStdErr: true 
       - name: Bicep Deploy diagnosticSettings for subscription
         uses: azure/arm-deploy@v2
@@ -54,8 +54,8 @@ jobs:
           scope: subscription
           region: ${{ env.LOCATION }}
           subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
-          template: ./bicep/sub-cdk-diag-settings.bicep
-          parameters: ./bicep/sub-cdk-diag-settings.parameters.json environment=dev
+          template: ./bicep/3-sub-cdk-diag-settings.bicep
+          parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=dev
           failOnStdErr: true 
       - name: logout
         run: |
