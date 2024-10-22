@@ -1,23 +1,12 @@
 name: Deploy Bicep file
 
-on: [push]
 
-permissions:
-      id-token: write
-      contents: read
-
-env:
-  AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}  
-  ENVIRONMENT: environment
 
 jobs:
 
   azure:
     runs-on: ubuntu-latest
     steps:
-
-    - name: Checkout code
-      uses: actions/checkout@main
 
     - name: Log into Azure
       uses: azure/login@v2

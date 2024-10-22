@@ -1,60 +1,126 @@
 name: CI + CD
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   push:
-    #branches: [ main ]
+    branches: []
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 env:
-    AZURE_SUBSCRIPTION: "sub-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"    
-    ENVIRONMENT: ${{ vars.ENVIRONMENT }}
-    GITHUB_ENVIRONMENT_NAME: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-${{ vars.ENVIRONMENT }}"
+  AZURE_SUBSCRIPTION_BASENAME: "sub-${{ vars.AZURE_SUBSCRIPTION }}"
+  LOCATION: westeurope  
 
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Compile
-        run: echo "env.AZURE_SUBSCRIPTION = ${{ env.AZURE_SUBSCRIPTION }}" 
-      - name: Compile2
-        run: echo "env.ENVIRONMENT = ${{ env.ENVIRONMENT }}" 
-      - name: Compile3
-        run: echo "env.GITHUB_ENVIRONMENT_NAME = ${{ env.GITHUB_ENVIRONMENT_NAME }}" 
-    
   DeployDev:
     name: Deploy to Dev 
-    if: github.event_name == 'pull_request'
-    needs: [Build]
+    # if: github.event_name == 'pull_request'
+    # needs: [Build]
     runs-on: ubuntu-latest
-    #environment: ${{env.GITHUB_ENVIRONMENT_NAME}}
+    environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-dev"
     steps:
-      - name: Deploy
-        run: echo I am deploying for dev! 
-    
-#   DeployStaging:
-#     name: Deploy to Staging 
-#     if: github.event.ref == 'refs/heads/main'
-#     needs: [Build]
-#     runs-on: ubuntu-latest
-#     environment: 
-#       name: Staging
-#       url: 'http://test.myapp.com'
-#     steps:
-#       - name: Deploy
-#         run: echo I am deploying! 
-            
-#   DeployProd:
-#     name: Deploy to Production 
-#     needs: [DeployStaging]
-#     runs-on: ubuntu-latest
-#     environment: 
-#       name: Production
-#       url: 'http://www.myapp.com'
-#     steps:
-#       - name: Deploy
-#         run: echo I am deploying! 
-    
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Log into Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Bicep Deploy resourceGroup "rg-core"
+        uses: azure/arm-deploy@v2
+        with:
+          scope: subscription
+          region: ${{ env.LOCATION }}
+          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
+          template: ./bicep/1-sub-cdk.bicep
+          parameters: ./bicep/1-sub-cdk.parameters.json environment=dev resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
+          failOnStdErr: true 
+      - name: Bicep Deploy LogWorkspace into "rg-core"
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
+          resourceGroupName: rg-core
+          template: ./bicep/sub-cdk/2-rg-core.bicep
+          parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=dev
+          failOnStdErr: true 
+      - name: Bicep Deploy diagnosticSettings for subscription
+        uses: azure/arm-deploy@v2
+        with:
+          scope: subscription
+          region: ${{ env.LOCATION }}
+          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
+          template: ./bicep/3-sub-cdk-diag-settings.bicep
+          parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=dev
+          failOnStdErr: true 
+      - name: logout
+        run: |
+          az logout
+  
+  DeployAcc:
+    name: Deploy to Acc 
+    if: github.event_name == 'pull_request'
+    # needs: [Build]
+    runs-on: ubuntu-latest
+    environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-acc"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Log into Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Bicep Deploy resourceGroup "rg-core"
+        uses: azure/arm-deploy@v2
+        with:
+          scope: subscription
+          region: ${{ env.LOCATION }}
+          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
+          template: ./bicep/1-sub-cdk.bicep
+          parameters: ./bicep/1-sub-cdk.parameters.json environment=acc resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
+          failOnStdErr: true 
+      - name: Bicep Deploy LogWorkspace into "rg-core"
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
+          resourceGroupName: rg-core
+          template: ./bicep/sub-cdk/2-rg-core.bicep
+          parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=acc
+          failOnStdErr: true 
+      - name: Bicep Deploy diagnosticSettings for subscription
+        uses: azure/arm-deploy@v2
+        with:
+          scope: subscription
+          region: ${{ env.LOCATION }}
+          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
+          template: ./bicep/3-sub-cdk-diag-settings.bicep
+          parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=acc
+          failOnStdErr: true 
+      - name: logout
+        run: |
+          az logout
+
+  # DeployStaging:
+  #   name: Deploy to Staging 
+  #   if: github.event.ref == 'refs/heads/main'
+  #   needs: [Build]
+  #   runs-on: ubuntu-latest
+  #   environment: "sub-${{ vars.AZURE_SUBSCRIPTION }}-acc"
+  #   steps:
+  #     - name: Deploy
+  #       run: echo I am deploying to acc! 
+
+  # DeployProd:
+  #   name: Deploy to Production 
+  #   needs: [DeployStaging]
+  #   runs-on: ubuntu-latest
+  #   environment: "sub-${{ vars.AZURE_SUBSCRIPTION }}-prd"
+  #   steps:
+  #     - name: Deploy
+  #       run: echo I am deploying to prod! 

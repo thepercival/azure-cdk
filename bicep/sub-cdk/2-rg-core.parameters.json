@@ -7,9 +7,9 @@
                 "name": "log-cdk",
                 "sku": "PerGB2018",
                 "retentionInDays": {
-                    "dev": 5,
-                    "acc": 5,
-                    "prd": 120
+                    "dev": 30,
+                    "acc": 30,
+                    "prd": 30
                 },
                 "resourcePermissions": true,
                 "heartbeatTableRetention": 30
