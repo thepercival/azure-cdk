@@ -12,7 +12,7 @@ module modLogWorkspace 'rg-core/operational-insights-workspace.bicep' = {
   params: {
     workspaceName: logWorkspaceName
     sku: logWorkspace.sku
-    retentionInDays: logWorkspace.retentionInDays
+    retentionInDays: logWorkspace.retentionInDays[environment]
     resourcePermissions: logWorkspace.resourcePermissions
     heartbeatTableRetention: logWorkspace.heartbeatTableRetention
   }
