@@ -1,9 +1,11 @@
+targetScope='subscription'
+
 param logAnalyticsWorkspaceId string
 
 var activityLogDiagnosticSettingsName = 'export-activity-log'
 
 resource subscriptionActivityLog 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: activityLogDiagnosticSettingsName
+  name: activityLogDiagnosticSettingsName  
   properties: {
     workspaceId: logAnalyticsWorkspaceId
     logs: [
