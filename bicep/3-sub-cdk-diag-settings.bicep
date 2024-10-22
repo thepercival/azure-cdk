@@ -1,6 +1,11 @@
 targetScope='subscription'
 
 // pipeline parameters
+@allowed([
+  'dev'
+  'acc'
+  'prd'
+])
 param environment sys.string
 
 // parameters.json
