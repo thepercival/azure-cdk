@@ -6,121 +6,42 @@ permissions:
 
 on:
   push:
-    branches: []
+    branches-ignore: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
-
-env:
-  AZURE_SUBSCRIPTION_BASENAME: "sub-${{ vars.AZURE_SUBSCRIPTION }}"
-  LOCATION: westeurope  
+    #workflow_dispatch:
 
 jobs:
   DeployDev:
-    name: Deploy to Dev 
-    # if: github.event_name == 'pull_request'
-    # needs: [Build]
-    runs-on: ubuntu-latest
-    environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-dev"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@main
-
-      - name: Log into Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Bicep Deploy resourceGroup "rg-core"
-        uses: azure/arm-deploy@v2
-        with:
-          scope: subscription
-          region: ${{ env.LOCATION }}
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
-          template: ./bicep/1-sub-cdk.bicep
-          parameters: ./bicep/1-sub-cdk.parameters.json environment=dev resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
-          failOnStdErr: true 
-      - name: Bicep Deploy LogWorkspace into "rg-core"
-        uses: azure/arm-deploy@v2
-        with:
-          scope: resourcegroup
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
-          resourceGroupName: rg-core
-          template: ./bicep/sub-cdk/2-rg-core.bicep
-          parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=dev
-          failOnStdErr: true 
-      - name: Bicep Deploy diagnosticSettings for subscription
-        uses: azure/arm-deploy@v2
-        with:
-          scope: subscription
-          region: ${{ env.LOCATION }}
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-dev"
-          template: ./bicep/3-sub-cdk-diag-settings.bicep
-          parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=dev
-          failOnStdErr: true 
-      - name: logout
-        run: |
-          az logout
+    name: Deploy to Dev
+    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow
+    with:
+      AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
+      LOCATION: westeurope
+      environment: dev
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
   
   DeployAcc:
     name: Deploy to Acc 
     if: github.event_name == 'pull_request'
-    # needs: [Build]
-    runs-on: ubuntu-latest
-    environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-acc"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@main
+    needs: [DeployDev]
+    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow    
+    with:
+      AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
+      LOCATION: westeurope
+      environment: acc
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Log into Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Bicep Deploy resourceGroup "rg-core"
-        uses: azure/arm-deploy@v2
-        with:
-          scope: subscription
-          region: ${{ env.LOCATION }}
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
-          template: ./bicep/1-sub-cdk.bicep
-          parameters: ./bicep/1-sub-cdk.parameters.json environment=acc resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
-          failOnStdErr: true 
-      - name: Bicep Deploy LogWorkspace into "rg-core"
-        uses: azure/arm-deploy@v2
-        with:
-          scope: resourcegroup
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
-          resourceGroupName: rg-core
-          template: ./bicep/sub-cdk/2-rg-core.bicep
-          parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=acc
-          failOnStdErr: true 
-      - name: Bicep Deploy diagnosticSettings for subscription
-        uses: azure/arm-deploy@v2
-        with:
-          scope: subscription
-          region: ${{ env.LOCATION }}
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
-          template: ./bicep/3-sub-cdk-diag-settings.bicep
-          parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=acc
-          failOnStdErr: true 
-      - name: logout
-        run: |
-          az logout
-
-  # DeployStaging:
-  #   name: Deploy to Staging 
-  #   if: github.event.ref == 'refs/heads/main'
-  #   needs: [Build]
-  #   runs-on: ubuntu-latest
-  #   environment: "sub-${{ vars.AZURE_SUBSCRIPTION }}-acc"
-  #   steps:
-  #     - name: Deploy
-  #       run: echo I am deploying to acc! 
-
-  # DeployProd:
-  #   name: Deploy to Production 
-  #   needs: [DeployStaging]
-  #   runs-on: ubuntu-latest
-  #   environment: "sub-${{ vars.AZURE_SUBSCRIPTION }}-prd"
-  #   steps:
-  #     - name: Deploy
-  #       run: echo I am deploying to prod! 
+  DeployPrd:
+    name: Deploy to Prd
+    if: github.event.ref == 'refs/heads/main'
+    needs: [DeployAcc]
+    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow    
+    with:
+      AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
+      LOCATION: westeurope
+      environment: prd
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}   
