@@ -2,7 +2,7 @@
 // pipeline parameters
 param environment sys.string
 
-// parameters.json
+// parameters.json test
 param logWorkspace object
 
 var logWorkspaceName = '${logWorkspace.name}-${environment}'
