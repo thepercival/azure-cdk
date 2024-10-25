@@ -1,0 +1,62 @@
+name: azure deployment
+
+on:
+  workflow_call:
+    inputs:
+      AZURE_SUBSCRIPTION:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      LOCATION:
+        required: true
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+
+jobs:
+  reusable_workflow_job:
+    runs-on: ubuntu-latest
+    environment: "github-azure-${{ inputs.AZURE_SUBSCRIPTION }}-${{ inputs.environment }}"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: actions/checkout@main
+    - name: Log into Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Bicep Deploy resourceGroup "rg-core"
+      uses: azure/arm-deploy@v2
+      with:
+        scope: subscription
+        region: ${{ inputs.LOCATION }}
+        subscriptionId: "sub-${{ inputs.AZURE_SUBSCRIPTION }}-${{ inputs.environment }}"
+        template: ./bicep/1-sub-cdk.bicep
+        parameters: ./bicep/1-sub-cdk.parameters.json environment=${{ inputs.environment }} resourceGroupName=rg-core resourceGroupLocation=${{ inputs.LOCATION }}
+        failOnStdErr: true 
+    - name: Bicep Deploy LogWorkspace into "rg-core"
+      uses: azure/arm-deploy@v2
+      with:
+        scope: resourcegroup
+        subscriptionId: "sub-${{ inputs.AZURE_SUBSCRIPTION }}-${{ inputs.environment }}"
+        resourceGroupName: rg-core
+        template: ./bicep/sub-cdk/2-rg-core.bicep
+        parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=${{ inputs.environment }}
+        failOnStdErr: true 
+    - name: Bicep Deploy diagnosticSettings for subscription
+      uses: azure/arm-deploy@v2
+      with:
+        scope: subscription
+        region: ${{ inputs.LOCATION }}
+        subscriptionId: "sub-${{ inputs.AZURE_SUBSCRIPTION }}-${{ inputs.environment }}"
+        template: ./bicep/3-sub-cdk-diag-settings.bicep
+        parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=${{ inputs.environment }}
+        failOnStdErr: true 
+    - name: logout
+      run: |
+        az logout
