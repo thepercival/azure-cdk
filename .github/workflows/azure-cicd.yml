@@ -63,51 +63,16 @@ jobs:
   
   DeployAcc:
     name: Deploy to Acc 
-        
-    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow
+    if: github.event_name == 'pull_request'
+    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow    
     with:
-      config-path: .github/labeler.yml
+      AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
+      LOCATION: ${{ env.LOCATION }}
+      environment: acc
     secrets:
-      personal_access_token: ${{ secrets.token }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@main
-
-      - name: Log into Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Bicep Deploy resourceGroup "rg-core"
-        uses: azure/arm-deploy@v2
-        with:
-          scope: subscription
-          region: ${{ env.LOCATION }}
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
-          template: ./bicep/1-sub-cdk.bicep
-          parameters: ./bicep/1-sub-cdk.parameters.json environment=acc resourceGroupName=rg-core resourceGroupLocation=${{ env.LOCATION }}
-          failOnStdErr: true 
-      - name: Bicep Deploy LogWorkspace into "rg-core"
-        uses: azure/arm-deploy@v2
-        with:
-          scope: resourcegroup
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
-          resourceGroupName: rg-core
-          template: ./bicep/sub-cdk/2-rg-core.bicep
-          parameters: ./bicep/sub-cdk/2-rg-core.parameters.json environment=acc
-          failOnStdErr: true 
-      - name: Bicep Deploy diagnosticSettings for subscription
-        uses: azure/arm-deploy@v2
-        with:
-          scope: subscription
-          region: ${{ env.LOCATION }}
-          subscriptionId: "${{ env.AZURE_SUBSCRIPTION_BASENAME }}-acc"
-          template: ./bicep/3-sub-cdk-diag-settings.bicep
-          parameters: ./bicep/3-sub-cdk-diag-settings.parameters.json environment=acc
-          failOnStdErr: true 
-      - name: logout
-        run: |
-          az logout
+   
 
   # DeployStaging:
   #   name: Deploy to Staging 
