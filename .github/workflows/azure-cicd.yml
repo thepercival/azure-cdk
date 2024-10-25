@@ -63,10 +63,13 @@ jobs:
   
   DeployAcc:
     name: Deploy to Acc 
-    if: github.event_name == 'pull_request'
-    # needs: [Build]
-    runs-on: ubuntu-latest
-    environment: "github-azure-${{ vars.AZURE_SUBSCRIPTION }}-acc"
+        
+    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow
+    with:
+      config-path: .github/labeler.yml
+    secrets:
+      personal_access_token: ${{ secrets.token }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@main
