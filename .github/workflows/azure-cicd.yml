@@ -6,24 +6,19 @@ permissions:
 
 on:
   push:
-    branches: []
+    branches-ignore: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
-
-env:
-  AZURE_SUBSCRIPTION: "sub-"
-  LOCATION: westeurope  
+    #workflow_dispatch:
 
 jobs:
   DeployDev:
     name: Deploy to Dev
-    if: github.event_name == 'pull_request'
     uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow
     with:
       AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
       LOCATION: westeurope
-      environment: acc
+      environment: dev
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
   
