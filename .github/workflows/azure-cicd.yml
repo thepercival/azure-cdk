@@ -10,11 +10,13 @@ on:
   pull_request:
     branches: [ main ]
     #workflow_dispatch:
+    types:
+      - closed
 
 jobs:
   DeployDev:
     name: Deploy to Dev
-    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow
+    uses: ./.github/workflows/azure-deployment.yml
     with:
       AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
       LOCATION: westeurope
@@ -24,9 +26,9 @@ jobs:
   
   DeployAcc:
     name: Deploy to Acc 
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event.pull_request.merged == true
     needs: [DeployDev]
-    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow    
+    uses: ./.github/workflows/azure-deployment.yml
     with:
       AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
       LOCATION: westeurope
@@ -36,9 +38,9 @@ jobs:
 
   DeployPrd:
     name: Deploy to Prd
-    if: github.event.ref == 'refs/heads/main'
+    if: github.event.pull_request.merged == true
     needs: [DeployAcc]
-    uses: thepercival/azure-cdk/.github/workflows/azure-deployment.yml@feature/reusableworkflow    
+    uses: ./.github/workflows/azure-deployment.yml
     with:
       AZURE_SUBSCRIPTION: ${{ vars.AZURE_SUBSCRIPTION }}
       LOCATION: westeurope
