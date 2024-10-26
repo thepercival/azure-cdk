@@ -9,8 +9,8 @@ on:
     branches-ignore: [ main ]
   pull_request:
     branches: [ main ]
-    #workflow_dispatch:
     types:
+      - opened
       - closed
 
 jobs:
