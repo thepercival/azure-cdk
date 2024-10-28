@@ -29,13 +29,25 @@ module modKeyVault 'rg-core/keyvault.bicep' = {
 }
 
 // add permissions per appreg
-module modRoleAssignment 'rg-core/keyvault-roleassignment.bicep' = {
-  name: guid(keyVaultName,  keyVault.adminstratorGroup.principalId)
+module modRoleAssignmentKeyVaultOfficer 'rg-core/keyvault-roleassignment.bicep' = {
+  name: guid(keyVaultName,  keyVault.secretsOfficers.principalId)
   params: {
     keyVaultName: keyVaultName
-    principalId: keyVault.adminstratorGroup.principalId
+    principalId: keyVault.secretsOfficers.principalId
     principalType: 'Group'
     role: 'Key Vault Secrets Officer'
   }
 }
+
+module modRoleAssignmentKeyVaultUsers 'rg-core/keyvault-roleassignment.bicep' = [
+  for secretsUser in keyVault.secretsUsers[environment]: {
+    name: guid(keyVaultName,  secretsUser.principalId)
+    params: {
+      keyVaultName: keyVaultName
+      principalId: secretsUser.principalId
+      principalType: 'ServicePrincipal'
+      role: 'Key Vault Secrets User'
+    }
+}]
+
 

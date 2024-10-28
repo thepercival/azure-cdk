@@ -8,6 +8,8 @@ param principalId string
   'User'
 ])
 param principalType string
+
+// https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide
 @allowed([
   'Key Vault Administrator'
   'Key Vault Certificates Officer'

@@ -22,9 +22,29 @@
                     "family": "A",
                     "name": "standard"
                 },
-                "adminstratorGroup": {
+                "secretsOfficers": {
                     "principalId": "97cfbd56-779c-40b3-9791-906be09fd8ba",
                     "name": "adminstrators"
+                },
+                "secretsUsers": {
+                    "dev": [
+                        {
+                            "principalId": "bfbdbee4-9c95-44fd-a080-37ad10d1c8c3",
+                            "name": "appreg-voetbaloog-dev"
+                        }
+                    ],
+                    "acc": [
+                        {
+                            "principalId": "b782ed91-93e2-4e59-b74f-77b3f340b9fd",
+                            "name": "appreg-voetbaloog-acc"
+                        }
+                    ],
+                    "prd": [
+                        {
+                            "principalId": "f6a45fe4-be46-4265-a3b9-bd583d556f38",
+                            "name": "appreg-voetbaloog-prd"
+                        }
+                    ]                    
                 }
             }
         }
