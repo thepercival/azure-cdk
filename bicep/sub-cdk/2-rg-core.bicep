@@ -34,7 +34,7 @@ module modRoleAssignment 'rg-core/keyvault-roleassignment.bicep' = {
     keyVaultName: keyVaultName
     principalId: keyVault.adminstratorGroup.principalId
     principalType: 'Group'
-    role: 'Key Vault Administrator'
+    role: 'Key Vault Secrets Officer'
   }
 }
 
