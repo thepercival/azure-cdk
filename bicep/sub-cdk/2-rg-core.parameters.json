@@ -17,7 +17,7 @@
         },
         "keyVault": {
             "value": {
-                "name": "kv-cdk",
+                "name": "kv-cdk-apps",
                 "sku": {
                     "family": "A",
                     "name": "standard"
