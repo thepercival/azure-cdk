@@ -35,16 +35,16 @@ resource resRoleDef 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
   }
 }
 
-// @sys.description('group assignments.')
-// module modRoleAssignments 'customrole-assignments.bicep' = [
-//   for entraGroup in entraGroups: {
-//     name: 'customRoleAssignment-${entraGroup.name}'
-//     params: {
-//       roleDefinitionId: resRoleDef.id
-//       entraGroupObjectId: entraGroup.objectId
-//     }
-// }
-// ]
+@sys.description('group assignments.')
+module modRoleAssignments 'customrole-assignments.bicep' = [
+  for entraGroup in entraGroups: {
+    name: 'customRoleAssignment-${entraGroup.name}'
+    params: {
+      roleDefinitionId: resRoleDef.id
+      entraGroupObjectId: entraGroup.objectId
+    }
+}
+]
 
 output entraGroups array = entraGroups
 
