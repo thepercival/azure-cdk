@@ -22,7 +22,7 @@ module modLogWorkspace 'rg-core/operational-insights-workspace.bicep' = {
 module modKeyVault 'rg-core/keyvault.bicep' = {
   name: 'keyVault'
   params: {
-    name: '${keyVault}-${environment}'
+    name: '${keyVault.name}-${environment}'
     sku: keyVault.sku
   }
 }
