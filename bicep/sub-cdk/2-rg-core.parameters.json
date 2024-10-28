@@ -36,13 +36,13 @@
                     "acc": [
                         {
                             "principalId": "537a2c71-7689-4158-bf18-7d7522444581",
-                            "name": "applications-acc"
+                            "name": "appreg-voetbaloog-acc"
                         }
                     ],
                     "prd": [
                         {
                             "principalId": "fc16712c-3250-4d87-a8fb-0ff71e5a1707",
-                            "name": "applications-prd"
+                            "name": "appreg-voetbaloog-prd"
                         }
                     ]                    
                 }

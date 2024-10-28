@@ -2,6 +2,22 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        
+        "customRole": {
+            "value": {
+                "name": "Key Vault resource manager template deployment operator",
+                "description": "Lets you deploy a resource manager template with the access to the secrets in the Key Vault.",
+                "actions": [
+                    "Microsoft.KeyVault/vaults/deploy/action"
+                ],
+                "entraGroupsToAssign": {
+                    "dev": [
+                        {
+                            "objectId": "8396cb77-597a-4bce-8d11-f94fbdec62eb",
+                            "name": "applications-dev"
+                        }
+                    ]
+                }
+            }
+        }
     }
 }
