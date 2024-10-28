@@ -9,7 +9,7 @@
                 "actions": [
                     "Microsoft.KeyVault/vaults/deploy/action"
                 ],
-                "entraGroupsToAssign": {
+                "entraGroups": {
                     "dev": [
                         {
                             "objectId": "8396cb77-597a-4bce-8d11-f94fbdec62eb",
