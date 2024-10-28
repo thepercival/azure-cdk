@@ -20,7 +20,7 @@ module modCustomRole 'modules/custom-role.bicep' = {
     name: customRole.name
     roleDescription: customRole.description
     actions: customRole.actions
-    entraGroups: customRole.entraGroup[environment]
+    entraGroups: customRole.entraGroups[environment]
   }
 }
 
