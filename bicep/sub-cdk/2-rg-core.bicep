@@ -45,7 +45,7 @@ module modRoleAssignmentKeyVaultUsers 'rg-core/keyvault-roleassignment.bicep' = 
     params: {
       keyVaultName: keyVaultName
       principalId: secretsUser.principalId
-      principalType: 'ServicePrincipal'
+      principalType: 'Group'
       role: 'Key Vault Secrets User'
     }
 }]

@@ -29,20 +29,20 @@
                 "secretsUsers": {
                     "dev": [
                         {
-                            "principalId": "cc347f29-191f-4c7e-96ff-40127148391e",
-                            "name": "appreg-voetbaloog-dev"
+                            "principalId": "8396cb77-597a-4bce-8d11-f94fbdec62eb",
+                            "name": "applications-dev"
                         }
                     ],
                     "acc": [
                         {
-                            "principalId": "b782ed91-93e2-4e59-b74f-77b3f340b9fd",
-                            "name": "appreg-voetbaloog-acc"
+                            "principalId": "537a2c71-7689-4158-bf18-7d7522444581",
+                            "name": "applications-acc"
                         }
                     ],
                     "prd": [
                         {
-                            "principalId": "f6a45fe4-be46-4265-a3b9-bd583d556f38",
-                            "name": "appreg-voetbaloog-prd"
+                            "principalId": "fc16712c-3250-4d87-a8fb-0ff71e5a1707",
+                            "name": "applications-prd"
                         }
                     ]                    
                 }
