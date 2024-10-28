@@ -37,7 +37,7 @@ jobs:
         template: ./bicep/1-sub-cdk.bicep
         parameters: ./bicep/1-sub-cdk.parameters.json environment=${{ inputs.environment }} resourceGroupName=rg-core resourceGroupLocation=${{ inputs.LOCATION }}
         failOnStdErr: true 
-    - name: Bicep Deploy LogWorkspace into "rg-core"
+    - name: Bicep Deploy resources into "rg-core"
       uses: azure/arm-deploy@v2
       with:
         scope: resourcegroup

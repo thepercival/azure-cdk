@@ -21,6 +21,10 @@
                 "sku": {
                     "family": "A",
                     "name": "standard"
+                },
+                "adminstratorGroup": {
+                    "principalId": "97cfbd56-779c-40b3-9791-906be09fd8ba",
+                    "name": "adminstrators"
                 }
             }
         }

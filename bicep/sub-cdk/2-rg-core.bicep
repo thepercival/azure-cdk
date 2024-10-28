@@ -7,6 +7,7 @@ param logWorkspace object
 param keyVault object
 
 var logWorkspaceName = '${logWorkspace.name}-${environment}'
+var keyVaultName = '${keyVault.name}-${environment}'
 
 module modLogWorkspace 'rg-core/operational-insights-workspace.bicep' = {
   name: 'logWorkspace'
@@ -27,4 +28,13 @@ module modKeyVault 'rg-core/keyvault.bicep' = {
   }
 }
 
+module modRoleAssignment 'rg-core/keyvault-roleassignment.bicep' = {
+  name: guid(keyVaultName,  keyVault.adminstratorGroup.principalId)
+  params: {
+    keyVaultName: keyVaultName
+    principalId: keyVault.adminstratorGroup.principalId
+    principalType: 'Group'
+    role: 'Key Vault Administrator'
+  }
+}
 
