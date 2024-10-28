@@ -14,6 +14,15 @@
                 "resourcePermissions": true,
                 "heartbeatTableRetention": 30
             }            
+        },
+        "keyVault": {
+            "value": {
+                "name": "kv-cdk",
+                "sku": {
+                    "family": "A",
+                    "name": "standard"
+                }
+            }
         }
     }
 }

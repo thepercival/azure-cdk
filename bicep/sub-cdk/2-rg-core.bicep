@@ -4,6 +4,7 @@ param environment sys.string
 
 // parameters.json test
 param logWorkspace object
+param keyVault object
 
 var logWorkspaceName = '${logWorkspace.name}-${environment}'
 
@@ -15,6 +16,14 @@ module modLogWorkspace 'rg-core/operational-insights-workspace.bicep' = {
     retentionInDays: logWorkspace.retentionInDays[environment]
     resourcePermissions: logWorkspace.resourcePermissions
     heartbeatTableRetention: logWorkspace.heartbeatTableRetention
+  }
+}
+
+module modKeyVault 'rg-core/keyvault.bicep' = {
+  name: 'keyVault'
+  params: {
+    name: '${keyVault}-${environment}'
+    sku: keyVault.sku
   }
 }
 
