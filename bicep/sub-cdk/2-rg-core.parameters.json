@@ -29,8 +29,8 @@
                 "secretsUsers": {
                     "dev": [
                         {
-                            "principalId": "8396cb77-597a-4bce-8d11-f94fbdec62eb",
-                            "name": "applications-dev"
+                            "principalId": "c9c7d105-8f2e-425d-916a-7cd6f4d76a75",
+                            "name": "appreg-voetbaloog-dev"
                         }
                     ],
                     "acc": [
